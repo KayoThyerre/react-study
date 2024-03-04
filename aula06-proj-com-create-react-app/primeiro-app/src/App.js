@@ -1,13 +1,17 @@
-// import Button from './components/button/button';
+import Button from './components/button/button';
 import './App.css';
-import Card from './components/card/card'
+import Cards from './components/cards/cards'
 
 function App() {
   return (
     <>
-    <Card title='Título card 1'/>
-    <Card title='Título card 2'/>
-    <Card title='Título card 3'/>
+    <Cards />
+    
+    {/* <Button label='Baixar CV'/>
+
+    <Button /> */}
+
+    
     </>
   );
 }
