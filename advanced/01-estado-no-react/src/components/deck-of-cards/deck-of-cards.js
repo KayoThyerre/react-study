@@ -1,5 +1,8 @@
-import { Component } from "react";
-import { useState } from "react";
+// import { Component } from "react";
+import { useState, useEffect } from "react";
+import Form from "../forms/form";
+
+
 
 async function createDeck() {
     const response = await fetch('https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
@@ -8,8 +11,26 @@ async function createDeck() {
 }
 
 async function getCards(deckId) {
-    const response = await fetch(`https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=52`)
+    const response = await fetch(`https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`)
     return await response.json()
+}
+
+
+
+const CardsList = (props) => {
+    return (
+        <ul>
+            {
+                props.cards.map((card, index) => {
+                    return (
+                        <li key={index}>
+                            <img src={card.image} alt={card.value} />
+                        </li>
+                    )
+                })
+            }
+        </ul>
+    )
 }
 
 const DeckOfCards = () => {
@@ -18,19 +39,29 @@ const DeckOfCards = () => {
         cards: []
     })
 
-    return (
+    useEffect(() => {
+        const fetchData = async () => {
+            const deckId = await createDeck()
+            const data = await getCards(deckId)
+
+            setDeck({
+                cards: data.cards
+            })
+        }
+        fetchData()
+    }, [])
+
+    const addCard = (newCard) => {
+        console.log(newCard)
+        setDeck({
+            cards: [...deck.cards, newCard]
+        })
+    }
+
+    return ( 
         <section>
-            <ul>
-                {
-                    deck.cards.map((card, index) => {
-                        return (
-                            <li key={index}>
-                                <img src={card.image} alt={card.value} />
-                            </li>
-                        )
-                    })
-                }
-            </ul>
+            <Form addCard={addCard}/>
+            {deck.cards.length > 0 ? <CardsList cards={deck.cards} /> : "Nenhuma carta encontrada."}
         </section>
     )
 
@@ -42,13 +73,7 @@ const DeckOfCards = () => {
     // }
 
     // async componentDidMount(){
-    //     const deckId = await createDeck()
-    //     const data = await getCards(deckId)
-
-    //     this.setState({
-    //         cards: data.cards
-    //     })
-    // }
+    //    
 
     // render(){
     //     
